@@ -45,7 +45,12 @@ UI.prototype.showAlert = function (message,className){
     },3000);
 
 }
-
+// Delete Services
+UI.prototype.deleteService = function (target) {
+    if (target.className === 'material-icons'){
+        target.parentElement.parentElement.parentElement.remove();
+ }
+}
 //Clear Fields
 UI.prototype.clearFields = function (service) {
     document.getElementById('serviceName').value = '',
@@ -77,5 +82,15 @@ document.getElementById('service-form').addEventListener('submit',function(e){
     }
    
    
+   e.preventDefault();
+});
+//EventListeners for delete services
+document.getElementById('service-list').addEventListener('click',function(e){
+   //Instantiate UI
+   const ui = new UI ();
+
+   ui.deleteService(e.target);
+  //show alert
+  ui.showAlert('Service Deleted','success');
    e.preventDefault();
 });
