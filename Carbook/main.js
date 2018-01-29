@@ -47,6 +47,13 @@ UI.prototype.showAlert = function (message, className){
     },3000);
 }
 
+//Delete Client
+UI.prototype.deleteClient = function(target){
+    if(target.className === 'material-icons'){
+       target.parentElement.parentElement.parentElement.remove();
+    }
+ }
+
 // Clear fields
 UI.prototype.clearFields = function (client){
     document.getElementById('firstName').value = '',
@@ -56,7 +63,7 @@ UI.prototype.clearFields = function (client){
     document.getElementById('problem').value = ''
 }
 
-//EventListeners 
+//EventListeners for adding clients 
 document.getElementById('form-client').addEventListener('submit' , function(e){
     //Get form value
    const firstName = document.getElementById('firstName').value,
@@ -82,4 +89,15 @@ document.getElementById('form-client').addEventListener('submit' , function(e){
    }
   
    e.preventDefault();
-})
+});
+//EventListeners for delete clients
+document.getElementById('client-list').addEventListener('click',function(e){
+     //Instantiate UI
+    const ui = new UI();
+    
+    ui.deleteClient(e.target);  
+    
+    //Show messege
+    ui.showAlert('Client Removed!', 'success');
+     e.preventDefault();
+});
