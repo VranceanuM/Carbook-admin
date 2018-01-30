@@ -57,6 +57,44 @@ class UI{
     }
    }
 }
+class Store {
+    static getClients(){
+      let registers;
+      if(localStorage.getItem('registers') === null){
+        registers = [];
+      } else {
+          registers = JSON.parse(localStorage.getItem('registers'));
+      }
+
+      return registers;
+    }
+    static displayClients(){
+        const registers = Store.getClients();
+
+        registers.forEach(function(register){
+                    const ui =new UI;
+
+                    //add service to ui
+                    ui.addClientToList(register);
+                });
+    }
+    static addClient(register){
+        const registers = Store.getClients();
+
+        registers.push(register);
+
+        localStorage.setItem('register',JSON.stringify(registers));
+    }
+    static removeClient(comment){
+        const registers = Store.getClients();
+        registers.forEach(function(register,index){
+                  if(register.comment === comment){
+                    registers.splice(index,1);
+                  }
+                });
+      localStorage.setItem('register',JSON.stringify(registers));
+    }
+}
 
 //Add event listeners
 document.getElementById('form-register').addEventListener('submit',function(e){
@@ -73,22 +111,25 @@ document.getElementById('form-register').addEventListener('submit',function(e){
     if (serviceName === '' ||serviceTelephone === '' || serviceAdress === '' ||servicePack === '' ||comments === '') {
         ui.showAlert('Please fill the fields','error')
     } else {
-        ui.addClientToList(register);  
+        ui.addClientToList(register);
          //Clear fields
         ui.clearFields(register);
+        //add to lS
+        Store.addClient(register);
         //Show succes
         ui.showAlert('Client Added!', 'success');
     }
 
-        e.preventDefault();    
+        e.preventDefault();
     });
     //EventListeners for delete clients
 document.getElementById('register-list').addEventListener('click',function(e){
     //Instantiate UI
    const ui = new UI();
-   
-   ui.deleteClient(e.target);  
-   
+
+   ui.deleteClient(e.target);
+   Store.removeClient(e.target.parentElement.parentElement.previousElementSibling.textContent);
+
    //Show messege
    ui.showAlert('Client Removed!', 'success');
     e.preventDefault();

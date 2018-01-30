@@ -7,7 +7,7 @@ class Client {
     this.carModel = carModel;
     this.problem = problem;
   }
-} 
+}
 // Create UI
 class UI {
     addClientToList(client){
@@ -70,10 +70,10 @@ class Store {
     }
     static displayClients(){
         const clients = Store.getClients();
-        
+
         clients.forEach(function(client){
                     const ui =new UI;
-        
+
                     //add service to ui
                     ui.addClientToList(client);
                 });
@@ -85,11 +85,17 @@ class Store {
 
         localStorage.setItem('clients',JSON.stringify(clients));
     }
-    static removeClient(){
-
+    static removeClient(problem){
+        const clients = Store.getClients();
+        clients.forEach(function(client,index){
+                  if(client.problem === problem){
+                    clients.splice(index,1);
+                  }
+                });
+      localStorage.setItem('clients',JSON.stringify(clients));
     }
 }
-//EventListeners for adding clients 
+//EventListeners for adding clients
 document.getElementById('form-client').addEventListener('submit' , function(e){
     //Get form value
    const firstName = document.getElementById('firstName').value,
@@ -115,7 +121,7 @@ document.getElementById('form-client').addEventListener('submit' , function(e){
    //Show succes
    ui.showAlert('Client Added!', 'success');
    }
-  
+
    e.preventDefault();
 });
 document.addEventListener('DOMContentLoaded',Store.displayClients);
@@ -124,9 +130,11 @@ document.addEventListener('DOMContentLoaded',Store.displayClients);
 document.getElementById('client-list').addEventListener('click',function(e){
      //Instantiate UI
     const ui = new UI();
-    
-    ui.deleteClient(e.target);  
-    
+
+    ui.deleteClient(e.target);
+    //Removed from LS
+    Store.removeClient(e.target.parentElement.parentElement.previousElementSibling.textContent);
+
     //Show messege
     ui.showAlert('Client Removed!', 'success');
      e.preventDefault();

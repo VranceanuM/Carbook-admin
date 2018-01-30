@@ -80,8 +80,14 @@ class Store {
 
         localStorage.setItem('services',JSON.stringify(services));
     }
-    static removeClient(){
-
+    static removeClient(comment){
+       const services = Store.getService();
+       services.forEach(function(service,index){
+         if(service.comment === comment){
+           services.splice(index,1)
+         }
+       });
+       localStorage.setItem('services',JSON.stringify(services));
     }
 }
 document.addEventListener('DOMContentLoaded',Store.displayService);
@@ -97,7 +103,7 @@ document.getElementById('service-form').addEventListener('submit',function(e){
    const ui = new UI ();
    //Initiate Service
    const service = new Service (serviceName,serviceTelephone,comment);
-   
+
     //Validate
     if (serviceName === '',serviceTelephone === '',serviceName === ''){
         ui.showAlert('Please fill the fields','error');
@@ -111,14 +117,16 @@ document.getElementById('service-form').addEventListener('submit',function(e){
         //Show succes
         ui.showAlert('Service Added!' , 'success');
     }
-   
-   
+
+
    e.preventDefault();
 });
 //EventListeners for delete services
     document.getElementById('service-list').addEventListener('click',function(e){
    //Instantiate UI
    const ui = new UI ();
+   //Remove from JS
+   Store.removeClient(e.target.parentElement.parentElement.previousElementSibling.textContent);
 
    ui.deleteService(e.target);
   //show alert
