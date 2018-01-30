@@ -1,31 +1,32 @@
 //Create object
-function Register (serviceName,serviceTelephone,serviceAdress,servicePack,comments){
-   this.serviceName = serviceName;
-   this.serviceTelephone = serviceTelephone;
-   this.serviceAdress = serviceAdress;
-   this.servicePack = servicePack;
-   this.comments = comments;
+class Register {
+    constructor(serviceName,serviceTelephone,serviceAdress,servicePack,comments){
+        this.serviceName = serviceName;
+        this.serviceTelephone = serviceTelephone;
+        this.serviceAdress = serviceAdress;
+        this.servicePack = servicePack;
+        this.comments = comments;
+    }
 }
 
 //Create UI
-function UI (){}
-//Add cleint
-UI.prototype.addClientToList = function (register){
-    const list = document.getElementById('register-list');
-    //Create tr element
-    const row = document.createElement('tr');
-    // Insert cols
-    row.innerHTML = `
-    <td>${register.serviceName}</td>
-    <td>${register.serviceTelephone}</td>
-    <td>${register.serviceAdress}</td>
-    <td>${register.servicePack}</td>
-    <td>${register.comments}</td>
-    <td><a href="#" class="delete"><i class="material-icons">clear</i></a></td>
-    `
-    list.appendChild(row);
-}
-UI.prototype.showAlert = function (message, className){
+class UI{
+    addClientToList(register){
+        const list = document.getElementById('register-list');
+        //Create tr element
+        const row = document.createElement('tr');
+        // Insert cols
+        row.innerHTML = `
+        <td>${register.serviceName}</td>
+        <td>${register.serviceTelephone}</td>
+        <td>${register.serviceAdress}</td>
+        <td>${register.servicePack}</td>
+        <td>${register.comments}</td>
+        <td><a href="#" class="delete"><i class="material-icons">clear</i></a></td>
+        `
+        list.appendChild(row);
+    }
+    showAlert(message, className){
     //Create Element
     const div = document.createElement('div');
     //Add class
@@ -40,23 +41,23 @@ UI.prototype.showAlert = function (message, className){
     container.insertBefore(div,form);
     //Dissepear after 3 sec
     setTimeout(function (){
-       document.querySelector('.alert').remove();
+    document.querySelector('.alert').remove();
     },3000);
-}
-//Clear Fields
-UI.prototype.clearFields = function (register){
+    }
+   clearFields(register){
     document.getElementById('serviceName').value = '';
     document.getElementById('serviceTelephone').value = '';
     document.getElementById('serviceAdress').value = '';
     document.getElementById('servicePack').value = '';
     document.getElementById('comments').value = '';
-}
-//Delete target
-UI.prototype.deleteClient = function(target){
+   }
+   deleteClient(target){
     if(target.className === 'material-icons'){
         target.parentElement.parentElement.parentElement.remove();
     }
+   }
 }
+
 //Add event listeners
 document.getElementById('form-register').addEventListener('submit',function(e){
     const    serviceName = document.getElementById('serviceName').value,

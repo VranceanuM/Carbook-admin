@@ -1,34 +1,31 @@
 // Create object
-function Client (firstName,telephone,carYear,carModel,problem){
-   this.firstName = firstName;
-   this.telephone = telephone;
-   this.carYear = carYear;
-   this.carModel = carModel;
-   this.problem = problem;
-}
-
+class Client {
+  constructor(firstName,telephone,carYear,carModel,problem){
+    this.firstName = firstName;
+    this.telephone = telephone;
+    this.carYear = carYear;
+    this.carModel = carModel;
+    this.problem = problem;
+  }
+} 
 // Create UI
-
-function UI (){}
-
-//Add client to list
-UI.prototype.addClientToList = function(client){
-const list = document.getElementById('client-list');
-//Create tr element
-const row = document.createElement('tr');
-// Insert cols
-row.innerHTML = `
-<td>${client.firstName}</td>
-<td>${client.telephone}</td>
-<td>${client.carYear}</td>
-<td>${client.carModel}</td>
-<td>${client.problem}</td>
-<td><a href="#" class="delete"><i class="material-icons">clear</i></a></td>
-`
-list.appendChild(row);
-}
-
-UI.prototype.showAlert = function (message, className){
+class UI {
+    addClientToList(client){
+        const list = document.getElementById('client-list');
+        //Create tr element
+        const row = document.createElement('tr');
+        // Insert cols
+        row.innerHTML = `
+        <td>${client.firstName}</td>
+        <td>${client.telephone}</td>
+        <td>${client.carYear}</td>
+        <td>${client.carModel}</td>
+        <td>${client.problem}</td>
+        <td><a href="#" class="delete"><i class="material-icons">clear</i></a></td>
+        `
+        list.appendChild(row);
+    }
+    showAlert(message, className){
     //Create Element
     const div = document.createElement('div');
     //Add class
@@ -43,26 +40,55 @@ UI.prototype.showAlert = function (message, className){
     container.insertBefore(div,form);
     //Dissepear after 3 sec
     setTimeout(function (){
-       document.querySelector('.alert').remove();
+        document.querySelector('.alert').remove();
     },3000);
-}
-
-//Delete Client
-UI.prototype.deleteClient = function(target){
-    if(target.className === 'material-icons'){
-       target.parentElement.parentElement.parentElement.remove();
     }
- }
-
-// Clear fields
-UI.prototype.clearFields = function (client){
-    document.getElementById('firstName').value = '',
-    document.getElementById('telephone').value = '',
-    document.getElementById('carYear').value = '',
-    document.getElementById('carModel').value = '',
-    document.getElementById('problem').value = ''
+    deleteClient(target){
+        if(target.className === 'material-icons'){
+            target.parentElement.parentElement.parentElement.remove();
+         }
+    }
+    clearFields(client){
+        document.getElementById('firstName').value = '',
+        document.getElementById('telephone').value = '',
+        document.getElementById('carYear').value = '',
+        document.getElementById('carModel').value = '',
+        document.getElementById('problem').value = ''
+    }
 }
+//Local Storage Class
+class Store {
+    static getClients(){
+      let clients;
+      if(localStorage.getItem('clients') === null){
+        clients = [];
+      } else {
+          clients = JSON.parse(localStorage.getItem('clients'));
+      }
 
+      return clients;
+    }
+    static displayClients(){
+        const clients = Store.getClients();
+        
+        clients.forEach(function(client){
+                    const ui =new UI;
+        
+                    //add service to ui
+                    ui.addClientToList(client);
+                });
+    }
+    static addClient(client){
+        const clients = Store.getClients();
+
+        clients.push(client);
+
+        localStorage.setItem('clients',JSON.stringify(clients));
+    }
+    static removeClient(){
+
+    }
+}
 //EventListeners for adding clients 
 document.getElementById('form-client').addEventListener('submit' , function(e){
     //Get form value
@@ -84,12 +110,16 @@ document.getElementById('form-client').addEventListener('submit' , function(e){
    ui.addClientToList(client);
    //Clear fields
    ui.clearFields(client);
+   //add to local storage
+   Store.addClient(client);
    //Show succes
    ui.showAlert('Client Added!', 'success');
    }
   
    e.preventDefault();
 });
+document.addEventListener('DOMContentLoaded',Store.displayClients);
+
 //EventListeners for delete clients
 document.getElementById('client-list').addEventListener('click',function(e){
      //Instantiate UI
